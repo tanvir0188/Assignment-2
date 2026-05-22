@@ -7,19 +7,32 @@ export const pool = new Pool({
 
 export const initDB = async () => {
   try {
-    // await pool.query(`
-    //     CREATE TABLE IF NOT EXISTS users(
-    //     id SERIAL PRIMARY KEY,
-    //     name VARCHAR(20),
-    //     email VARCHAR(20) UNIQUE NOT NULL,
-    //     password TEXT NOT NULL,
-    //     is_active BOOLEAN DEFAULT true,
-    //     age INT,
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS users(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(20),
+        email VARCHAR(20) UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role VARCHAR(20),
+        
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+        )
+          `);
+    
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS issues(
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(150),
+      description TEXT NOT NULL,
+      type VARCHAR(20) NOT NULL,
+      status VARCHAR(20) DEFAULT 'open',
+      reporter_id INTEGER NOT NULL,
 
-    //     created_at TIMESTAMP DEFAULT NOW(),
-    //     updated_at TIMESTAMP DEFAULT NOW()
-    //     )
-    //         `);
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+      )
+        `);
 
     
 
