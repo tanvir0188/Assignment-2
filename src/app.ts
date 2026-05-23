@@ -2,18 +2,21 @@ import CookieParser from "cookie-parser";
 import cors from "cors";
 import express, {
   type Application,
-  type Request,
-  type Response,
 } from "express";
+
 import logger from "./middleware/logger";
 import globalErrorHandler from "./middleware/globalErrorHandler";
-import { userRoute } from "./modules/auth/signup.route";
+import { signupRoute } from "./modules/auth/signup.route";
+import { loginRoute } from "./modules/auth/login.route";
+
 const app: Application = express();
 
 app.use(CookieParser());
+
 app.use(express.json());
-app.use(express.text());
+
 app.use(express.urlencoded({ extended: true }));
+
 app.use(logger);
 
 app.use(
@@ -22,10 +25,9 @@ app.use(
   }),
 );
 
-app.use("/api/auth/signup/", userRoute);
+app.use("/api/auth", signupRoute);
+app.use("/api/auth", loginRoute);
 
-
-// Global Error Handling Middleware
 app.use(globalErrorHandler);
 
 export default app;

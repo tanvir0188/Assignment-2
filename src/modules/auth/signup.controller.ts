@@ -3,27 +3,33 @@ import sendResponse from "../../utility/sendResponse";
 import { userService } from "./signup.service";
 
 const createUser = async (req: Request, res: Response) => {
-  
-
   try {
     const result = await userService.createUserIntoDB(req.body);
-    // console.log(result);
 
     sendResponse(res, {
       statusCode: 201,
       success: true,
-      message: "User Created successfully!",
-      data: result.rows[0],
+      message: "User created successfully!",
+      data: result,
     });
   } catch (error: any) {
+    const clientError = /already exists|required|Invalid|must|valid/i.test(
+      error.message,
+    );
+
     sendResponse(res, {
-      statusCode: 500,
+      statusCode: error.message.includes("already exists")
+        ? 409
+        : clientError
+        ? 400
+        : 500,
       success: false,
       message: error.message,
       error: error,
     });
   }
 };
+
 export const userController = {
-  createUser
+  createUser,
 };
