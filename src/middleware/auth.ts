@@ -51,13 +51,6 @@ const auth = (...roles: ROLES[]) => {
         });
       }
 
-      if (!user?.is_active) {
-        res.status(403).json({
-          success: false,
-          message: "Forbidden!!",
-        });
-      }
-
       // console.log("Auth Role :", user.role);
 
       // roles = ["maintainer","contributor"]
