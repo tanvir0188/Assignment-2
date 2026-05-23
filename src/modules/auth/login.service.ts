@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { pool } from "./../../db/index";
+import { pool } from "../../db/index";
 
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../../config";
@@ -21,7 +21,7 @@ const loginUserIntoDB = async (payload: {
     [email],
   );
   if (userData.rows.length === 0) {
-    throw new Error("Invalid Credentials!");
+    throw new Error("No user found with the given email");
   }
 
   // 2. Compare the password -> Done
@@ -36,8 +36,7 @@ const loginUserIntoDB = async (payload: {
   const jwtpayload = {
     id: user.id,
     name: user.name,
-    role: user.role,
-    is_active: user.is_active,
+    role: user.role,    
     email: user.email,
   };
 
@@ -75,15 +74,11 @@ const generateFreshToken = async (token: string) => {
     throw new Error("User not found!!");
   }
 
-  if (!user?.is_active) {
-    throw new Error("Forbidden!!");
-  }
 
   const jwtpayload = {
     id: user.id,
     name: user.name,
     role: user.role,
-    is_active: user.is_active,
     email: user.email,
   };
 

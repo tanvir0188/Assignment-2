@@ -1,10 +1,9 @@
 import type { Request, Response } from "express";
 import sendResponse from "../../utility/sendResponse";
-import { userService } from "./user.service";
+import { userService } from "./signup.service";
 
 const createUser = async (req: Request, res: Response) => {
-  //   console.log(req.body);
-  //   const { name, email, password, age } = req.body;
+  
 
   try {
     const result = await userService.createUserIntoDB(req.body);
@@ -25,14 +24,6 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
-
-
-
-
-
-
-
-
 export const userController = {
   createUser
 };
