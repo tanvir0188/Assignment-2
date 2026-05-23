@@ -8,12 +8,9 @@ const loginUserIntoDB = async (payload: {
   email: string;
   password: string;
 }) => {
+  console.log(payload)
   const { email, password } = payload;
-  // 1. Check if the user exists -> Done
-  // 2. Compare the password -> Done
-  //3. Generate Token -> Done
 
-  // 1. Check if the user exists
   const userData = await pool.query(
     `
     SELECT * FROM users WHERE email=$1
@@ -25,8 +22,8 @@ const loginUserIntoDB = async (payload: {
   }
 
   // 2. Compare the password -> Done
-  const user = userData.rows[0];
-  const matchPassword = await bcrypt.compare(password, user.password);
+  const userInfo = userData.rows[0];
+  const matchPassword = await bcrypt.compare(password, userInfo.password);
 
   if (!matchPassword) {
     throw new Error("Invalid Credentials!");
@@ -34,11 +31,20 @@ const loginUserIntoDB = async (payload: {
 
   //3. Generate Token
   const jwtpayload = {
-    id: user.id,
-    name: user.name,
-    role: user.role,    
-    email: user.email,
+    id: userInfo.id,
+    name: userInfo.name,
+    role: userInfo.role,
+
   };
+
+  const user = {
+    id:userInfo.id,
+    name:userInfo.name,
+    email:userInfo.email,
+    role:userInfo.role,
+    created_at:userInfo.created_at,
+    updated_at:userInfo.updated_at
+  }
 
   const accessToken = jwt.sign(jwtpayload, config.secret as string, {
     expiresIn: "1d",
@@ -48,7 +54,7 @@ const loginUserIntoDB = async (payload: {
     expiresIn: "10d",
   });
 
-  return { accessToken, refreshToken };
+  return { accessToken, user };
 };
 
 
