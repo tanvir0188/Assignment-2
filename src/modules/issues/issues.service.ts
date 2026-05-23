@@ -83,7 +83,26 @@ const getIssues = async (query: IssueQuery): Promise<IIssue[]> => {
   }));
 };
 
+const deleteIssueFromDB = async (id: string) => {
+  const result = await pool.query(
+    `
+      DELETE FROM issues
+      WHERE id = $1
+      RETURNING *
+    `,
+    [id]
+  );
+
+  if (result.rowCount === 0) {
+    throw new Error("Issue not found");
+  }
+
+  return result.rows[0];
+};
+
+
 export const issueService = {
   createIssue,
   getIssues,
+  deleteIssueFromDB
 };
