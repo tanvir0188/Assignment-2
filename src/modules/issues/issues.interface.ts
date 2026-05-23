@@ -14,6 +14,12 @@ export interface IReporter {
   role: string;
 }
 
+export interface IUpdateIssue {
+  title?: string;
+  description?: string;
+  type?: "bug" | "feature_request";
+}
+
 export interface IIssue extends ICreateIssue {
   id: number;
   status: IssueStatus;

@@ -1,4 +1,4 @@
-import type { ICreateIssue } from "./issues.interface";
+import type { ICreateIssue, IUpdateIssue } from "./issues.interface";
 
 const allowedIssueTypes = ["bug", "feature_request"] as const;
 
@@ -43,4 +43,70 @@ export const validateCreateIssuePayload = (
     description,
     type,
   };
+};
+
+export const validateUpdateIssuePayload = (
+  payload: Partial<IUpdateIssue>,
+): IUpdateIssue => {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Invalid request payload");
+  }
+
+  const updateData: IUpdateIssue = {};
+
+  // TITLE
+  if (payload.title !== undefined) {
+    const title = payload.title.toString().trim();
+
+    if (!title) {
+      throw new Error("Title cannot be empty");
+    }
+
+    if (title.length > 150) {
+      throw new Error("Title must not exceed 150 characters");
+    }
+
+    updateData.title = title;
+  }
+
+  // DESCRIPTION
+  if (payload.description !== undefined) {
+    const description = payload.description.toString().trim();
+
+    if (!description) {
+      throw new Error("Description cannot be empty");
+    }
+
+    if (description.length < 20) {
+      throw new Error("Description must be at least 20 characters");
+    }
+
+    updateData.description = description;
+  }
+
+  // TYPE
+  if (payload.type !== undefined) {
+    const type = payload.type.toString().trim().toLowerCase();
+
+    if (!allowedIssueTypes.includes(type as any)) {
+      throw new Error("Invalid type. Must be bug or feature_request");
+    }
+
+    if (payload.type !== undefined) {
+    const type = payload.type.toString().trim().toLowerCase();
+
+    if (!allowedIssueTypes.includes(type as any)) {
+        throw new Error("Invalid type. Must be bug or feature_request");
+      }
+
+      updateData.type = type as "bug" | "feature_request";
+      }
+    }
+
+  // prevent empty update
+  if (Object.keys(updateData).length === 0) {
+    throw new Error("At least one field must be provided for update");
+  }
+
+  return updateData;
 };
