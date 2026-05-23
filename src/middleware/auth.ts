@@ -17,11 +17,13 @@ const auth = (...roles: ROLES[]) => {
       // 3. Find the user into database
       // 4. If the user active or not?
 
-      const token = req.headers.authorization;
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader?.startsWith("Bearer ")
+        ? authorizationHeader.slice(7)
+        : authorizationHeader;
 
-      // console.log(token);
       if (!token) {
-        res.status(401).json({
+        return res.status(401).json({
           success: false,
           message: "Unauthorized access!!",
         });
@@ -32,20 +34,25 @@ const auth = (...roles: ROLES[]) => {
         config.secret as string,
       ) as JwtPayload;
 
+      const userId = Number(decoded.id);
+      if (Number.isNaN(userId)) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token payload",
+        });
+      }
+
       const userData = await pool.query(
         `
-     SELECT * FROM users WHERE email=$1   
+     SELECT * FROM users WHERE id=$1   
         `,
-        [decoded.email],
+        [userId],
       );
-
-      // console.log(userData);
 
       const user = userData.rows[0];
 
-      // console.log(user);
       if (userData.rows.length === 0) {
-        res.status(404).json({
+        return res.status(404).json({
           success: false,
           message: "User not found!",
         });
