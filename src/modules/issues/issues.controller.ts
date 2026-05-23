@@ -79,6 +79,31 @@ const getIssues = async (req: Request, res: Response) => {
   }
 };
 
+const getIssueById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue id",
+      });
+    }
+
+    const result = await issueService.getIssueById(id);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const deleteIssue = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -109,5 +134,6 @@ const deleteIssue = async (req: Request, res: Response) => {
 export const issueController = {
   createIssue,
   getIssues,
-  deleteIssue
+  deleteIssue,
+  getIssueById
 };

@@ -100,9 +100,46 @@ const deleteIssueFromDB = async (id: string) => {
   return result.rows[0];
 };
 
+const getIssueById = async (id: string) => {
+  const result = await pool.query(
+    `
+      SELECT
+        issues.*,
+        users.name AS reporter_name,
+        users.role AS reporter_role
+      FROM issues
+      JOIN users ON issues.reporter_id = users.id
+      WHERE issues.id = $1
+    `,
+    [id]
+  );
+
+  if (result.rowCount === 0) {
+    throw new Error("Issue not found");
+  }
+
+  const row = result.rows[0];
+
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    type: row.type,
+    status: row.status,
+    reporter: {
+      id: row.reporter_id,
+      name: row.reporter_name,
+      role: row.reporter_role,
+    },
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  };
+};
+
 
 export const issueService = {
   createIssue,
   getIssues,
+  getIssueById,
   deleteIssueFromDB
 };
