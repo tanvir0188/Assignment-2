@@ -18,13 +18,13 @@ npm run dev
 # API  endpoints
 
 ## Auth
-* POST /api/auth/signup
-* POST /api/auth/login
+* POST https://assignment-2-program-hero.vercel.app/api/auth/signup
+* POST https://assignment-2-program-hero.vercel.app/api/auth/login
 
 ## Issues
 
-* POST /api/issues
-* GET /api/issues
-* GET /api/issues/:id
-* PATCH /api/issues/:id
-* DELETE /api/issues/:id
+* POST https://assignment-2-program-hero.vercel.app/api/issues
+* GET https://assignment-2-program-hero.vercel.app/api/issues
+* GET https://assignment-2-program-hero.vercel.app/api/issues/:id
+* PATCH https://assignment-2-program-hero.vercel.app/api/issues/:id
+* DELETE https://assignment-2-program-hero.vercel.app/api/issues/:id
